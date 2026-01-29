@@ -21,7 +21,7 @@ We assume that average user input is 2 words and therefore of cost of ```$0.0000
 interface Query {
     externalityQuery: string<length{"maximum 5 tokens"}>
     market_structure?: "perfect competition" | "monopolistic competition" | "monopoly" | "oligopoly"
-    company_focus?: string
+    industry?: string
 }
 ```
 
@@ -41,16 +41,9 @@ Mkt:monopoly
 Overall system prompt length ~40 tokens  
 User input must consist of maximum 5 tokens  
 
-#### Response type:
-```ts
-interface Response {
-    type: "no_effect" | "positive" | "negative"
-    effect: "no_effect" | "minor" | "medium" | "major" | "catastrophic" // Effect names E1
-}
-```
 #### Effect map:
 ```js
-const EFFECT_MAP = {
+const MAGNITUDE_MAP = {
     no_effect: 0,
     minor: 0.5,
     medium: 1, // default
@@ -58,10 +51,19 @@ const EFFECT_MAP = {
     catastrophic: 2 // value E1
 }
 ```
+#### Response type:
+```ts
+interface Response {
+    type: "no_effect" | "positive" | "negative"
+    demand: "increase" | "decrease" | "no_impact"
+    supply: "increase" | "decrease" | "no_impact"
+    effect: "no_effect" | "minor" | "medium" | "major" | "catastrophic" // Effect names E1
+}
+```
 #### Example response:
 ```json 
 {
-    "extType": "negative",
+    "type": "negative",
     "effect": "major",
 }
 ```

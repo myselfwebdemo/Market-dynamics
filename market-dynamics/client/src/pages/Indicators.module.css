@@ -1,0 +1,27 @@
+.base {
+    --size: 1.8vh;
+    width: var(--size);
+    height: var(--size);
+    font-size: 1.3em;
+    font-weight: 400;
+    text-align: center;
+}
+.base p {
+    width: 100%;
+}
+.base img {
+    --size: 1.8vh;
+    width: var(--size);
+    height: var(--size);
+}
+
+.no_effect {
+    border: solid 2px var(--theme-el-color);
+}
+
+.positive_t {
+    color: var(--theme-positive-color);
+}
+.negative_t {
+    color: red;
+}

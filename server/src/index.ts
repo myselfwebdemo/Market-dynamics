@@ -18,7 +18,10 @@ app.post('/api/classify', async (req: any, res: any) => {
     const { externalityQuery, market_structure, industry } = req.body;
 
     const prompt = `
-        JSON:type:no_effect/positive/negative,effect:no_effect/minor/medium/major/catastrophic
+        JSON:type:no_effect/positive/negative,
+        demand:decrease/increase/no_impact,
+        supply:decrease/increase/no_impact,
+        effect:float range -1.00 to +1.00 inclusive
         Ext:${externalityQuery}
         Mkt:${market_structure}
         Ind:${industry}
