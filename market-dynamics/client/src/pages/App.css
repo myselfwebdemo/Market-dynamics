@@ -15,8 +15,11 @@
   --theme-bg-color: #fafafa;
   --theme-light-color-const: #fafafa;
   --theme-dark-color-const: #111;
+
   --debug-bg: rgb(255, 100, 100);
   --theme-positive-color: rgb(0,200,0);
+  --theme-negative-color: red;
+  
   --light-theme-invert-bg-10-color: #f9f9f9; /* 10(%) */
   --light-theme-invert-bg-20-color: #f2f2f2;
   --bg-lightgray-30: rgba(211, 211, 211, .3);
@@ -40,6 +43,7 @@
 #root {
   display: flex;
   flex-direction: row;
+  align-items: center;
   width: 100vw;
   height: 100vh;
   z-index: 0;
@@ -65,21 +69,21 @@ span {
 }
 
 .side-content {
-  flex: 1;
   display: flex;
   flex-direction: column;
   justify-content: center;
   gap: 2vh;
+  width: 20vw;
+  margin-left: 3%;
 }
 
-.form, .direct-response {
+.form, .direct-response, .main-content {
   --blur: 10px;
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
-  width: 20%;
+  width: 100%;
   height: fit-content;
-  margin-left: 3%;
   padding: 1em;
   background: transparent;
   backdrop-filter: blur(var(--blur));
@@ -118,7 +122,9 @@ border: solid 2px var(--theme-color);
   background: var(--light-theme-invert-bg-20-color);
   display: flex;
   flex-direction: column;
-  gap: 2vh;
+  height: 18vh;
+  justify-content: space-between;
+  overflow: hidden;
 }
 .direct-response div {
   display: flex;
@@ -128,4 +134,10 @@ border: solid 2px var(--theme-color);
 }
 .direct-response div:last-child div {
   font-size: .8em;
+}
+
+.main-content {
+  flex: 1;
+  height: 60%;
+  margin: 0 3%;
 }
