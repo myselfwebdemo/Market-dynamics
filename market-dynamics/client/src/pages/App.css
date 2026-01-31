@@ -11,18 +11,21 @@
   color: var(--theme-el-color);
   --theme-color: #646cff;
   --theme-dark-color: #5258d0;
+  --theme-secondary-color: rgb(255,100,100);
   --theme-el-color: #111;
   --theme-bg-color: #fafafa;
   --theme-light-color-const: #fafafa;
   --theme-dark-color-const: #111;
 
-  --debug-bg: rgb(255, 100, 100);
+  --debug-bg: var(--theme-secondary-color);
   --theme-positive-color: rgb(0,200,0);
   --theme-negative-color: red;
   
   --light-theme-invert-bg-10-color: #f9f9f9; /* 10(%) */
   --light-theme-invert-bg-20-color: #f2f2f2;
   --bg-lightgray-30: rgba(211, 211, 211, .3);
+
+  --disabled-btn-filter: brightness(150%);
   
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -37,6 +40,8 @@
     /* --theme-color: #a3aaff;  */
     --light-theme-invert-bg-10-color: #222;
     --light-theme-invert-bg-20-color: #333;
+
+    --disabled-btn-filter: invert(10%) brightness(70%);
   }
 }
 
@@ -46,7 +51,7 @@
   align-items: center;
   width: 100vw;
   height: 100vh;
-  z-index: 0;
+  z-index: 1;
 }
 
 canvas {
@@ -56,7 +61,7 @@ canvas {
   display: block;
   width: 100vw;
   height: 100vh;
-  z-index: -1;
+  z-index: 0;
 }
 
 input,
@@ -77,7 +82,7 @@ span {
   margin-left: 3%;
 }
 
-.form, .direct-response, .main-content {
+.form, .direct-req-res, .main-content {
   --blur: 10px;
   box-sizing: border-box;
   display: flex;
@@ -93,6 +98,7 @@ span {
   box-shadow: inset 0 0 .5vh var(--theme-color);
 }
 
+h2,
 label,
 button {
   text-transform: capitalize;
@@ -106,9 +112,9 @@ input {
   outline: none;
   text-overflow: ellipsis;
 }
-/* input:focus {
-border: solid 2px var(--theme-color);
-} */
+input:focus {
+  border-right: solid 3px var(--theme-positive-color);
+}
 
 .form-actions {
   display: flex;
@@ -116,23 +122,39 @@ border: solid 2px var(--theme-color);
   gap: .5em;
 }
   
-.direct-response {
+.direct-req-res {
   border: none;
   box-shadow: none;
   background: var(--light-theme-invert-bg-20-color);
-  display: flex;
-  flex-direction: column;
-  height: 18vh;
-  justify-content: space-between;
+  margin-top: 2em;
   overflow: hidden;
 }
-.direct-response div {
+
+.direct-req-res h2 {
+  margin-bottom: .45vh;
+}
+
+.direct-req, .direct-res {
+  display: flex;
+  flex-direction: column;
+  gap: .5em;
+}
+
+.direct-req {
+  margin-bottom: 1em;
+}
+
+.direct-res {
+  height: 12vh;
+  position: relative;
+}
+.direct-res div {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
 }
-.direct-response div:last-child div {
+.direct-res div:last-child div {
   font-size: .8em;
 }
 

@@ -1,12 +1,13 @@
-import { STAR_CONFIG } from "./starConfig";
+import { STAR_CONFIG } from "../config";
 
-export const max_size = STAR_CONFIG.max_size;
-export const min_size = STAR_CONFIG.min_size;
+export const max_size = STAR_CONFIG.maxSize;
+export const min_size = STAR_CONFIG.minSize;
 
 export default class Star {
     x: number
     y: number
     size: number
+    initSize: number
     color: string
     pulseDir: number
     speed: number
@@ -17,6 +18,7 @@ export default class Star {
         this.x = x;
         this.y = y;
         this.size = size;
+        this.initSize = size;
         this.color = !!color ? color : STAR_CONFIG.color;
 
         this.pulseDir = 1;
@@ -53,10 +55,9 @@ export default class Star {
     }
 
     update() {
-        this.size += this.speed * this.pulseDir;
-
         if (this.size >= this.max_size_bound || this.size <= this.min_size_bound) {
-        this.pulseDir *= -1;
+            this.pulseDir *= -1;
         }
+        this.size += this.speed * this.pulseDir;
     }
 }
