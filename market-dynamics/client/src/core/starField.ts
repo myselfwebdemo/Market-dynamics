@@ -30,6 +30,16 @@ document.addEventListener('mousemove', getCursorCoords);
 canvas.width = window.innerWidth * dpr;
 canvas.height = window.innerHeight * dpr;
 
+export const starMagnifier = {
+    radius: Number(localStorage.getItem('starMagnifierRadius')) || STAR_MAGNIFIER.radius,
+    strength: Number(localStorage.getItem('starMagnifierStrength')) || STAR_MAGNIFIER.concavityFactor,
+    maxSize: Number(localStorage.getItem('starMagnifierMaxSize')) || STAR_MAGNIFIER.sizeFactor,
+}
+
+export function updateStarMagnifier(partial: Partial<typeof starMagnifier>) {
+  Object.assign(starMagnifier, partial);
+}
+
 function spawnStars(nPerRow: number) {
     const stars = [];
     const star_size = STAR_CONFIG.size;
@@ -99,7 +109,7 @@ function getNonEuclDist(star: Star) {
     const sin = Math.sin(ang);
 
     const sum = Math.abs(sin) + Math.abs(cos);
-    const CF = STAR_MAGNIFIER.concavityFactor;
+    const CF = starMagnifier.strength;
     let concavity_factor = 1;
 
     concavity_factor *= Math.pow(sum, CF);
@@ -110,7 +120,7 @@ function getNonEuclDist(star: Star) {
         const endX = cx * dpr + cos * dist;
         const endY = cy * dpr + sin * dist;
         
-        if (dist < STAR_MAGNIFIER.radius * max_boundary_factor) {
+        if (dist < starMagnifier.radius * max_boundary_factor) {
             ctx.beginPath();
             ctx.moveTo(cx * dpr, cy * dpr);
             ctx.lineTo(endX, endY);
@@ -128,13 +138,18 @@ function influenceSize(star: Star, dist: number, max_boundary_factor?: number) {
         return;
     }
 
-    const influence = 1 - dist / STAR_MAGNIFIER.radius / (!!max_boundary_factor ? max_boundary_factor : 1)
-    const scale = 1 + influence * STAR_MAGNIFIER.sizeFactor
-    star.size = star.initSize * scale
+    const influence = 1 - dist / starMagnifier.radius / (!!max_boundary_factor ? max_boundary_factor : 1)
+    const scale = 1 + influence * starMagnifier.maxSize
+    star.size = star.initSize * scale;
 }
 
 function influenceColor(star: Star, dist: number, max_bondary_factor?: number) {
-    const influence = Math.max(0, 1 - dist / STAR_MAGNIFIER.radius / (!!max_bondary_factor ? (max_bondary_factor/1.3) : 1));
+    if (withinBlockedArea(star)) {
+        star.color = STAR_CONFIG.color
+        return;
+    }
+
+    const influence = Math.max(0, 1 - dist / starMagnifier.radius / (!!max_bondary_factor ? (max_bondary_factor/1.3) : 1));
 
     const initR = Number(STAR_MAGNIFIER.initColor.split(',')[0]);
     const initG = Number(STAR_MAGNIFIER.initColor.split(',')[1]);
@@ -155,22 +170,22 @@ function updateCursorEffect() {
     for (const star of stars) {
         const {dist, max_boundary_factor} = getNonEuclDist(star);
 
-        if (dist < STAR_MAGNIFIER.radius * max_boundary_factor) {
+        if (dist < starMagnifier.radius * max_boundary_factor) {
             influenceSize(star, dist, max_boundary_factor);
             influenceColor(star, dist, max_boundary_factor)
         } else {
             star.size += (star.initSize - star.size) * STAR_MAGNIFIER.lastingEffectFactor;
-            star.color = 'rgb(255,100,100)'
+            star.color = STAR_CONFIG.color
         }
         star.draw(ctx);
     }
 }
 
-function animate() {
+function run() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     updateCursorEffect();
-    requestAnimationFrame(animate);
+    requestAnimationFrame(run);
 }
 
-animate();
+run();
 

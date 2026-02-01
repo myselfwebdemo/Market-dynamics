@@ -7,8 +7,10 @@ button {
 }
 
 .disabled {
+    cursor: default;
     pointer-events: none;
     filter: var(--disabled-btn-filter);
+    background: blue;
 }
 
 .primary {

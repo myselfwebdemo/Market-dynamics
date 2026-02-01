@@ -10,8 +10,8 @@ export default class Star {
     speed: number
     max_size_bound: number
     min_size_bound: number
-    boundingBoxSize: number = 0;
-    index: number = 0;
+    boundingBoxSize: number = 0
+    index: number = 0
 
     constructor(x: number, y: number, size: number, color?: string, aniSpeed?: number, mxs?: number, mns?: number) {
         this.x = x;
@@ -34,7 +34,7 @@ export default class Star {
         ctx.translate(this.x, this.y);
         ctx.fillStyle = this.color;
         ctx.strokeStyle = this.color;
-
+        
         const x_left = this.x - this.size;
         const x_right = this.x + this.size;
         const y_top = this.y - this.size;
@@ -42,11 +42,11 @@ export default class Star {
         const star_size = this.size - 1;
         
         ctx.beginPath();
-        ctx.arc(x_left, y_top, star_size, 0, p/2)
-        ctx.arc(x_left, y_bottom, star_size, p*3/2, p*2)
-        ctx.arc(x_right, y_bottom, star_size, p, p*3/2)
-        ctx.arc(x_right, y_top, star_size, p/2, p)
-
+        ctx.arc(x_left, y_top, star_size, 0, p/2);
+        ctx.arc(x_left, y_bottom, star_size, p*3/2, p*2);
+        ctx.arc(x_right, y_bottom, star_size, p, p*3/2);
+        ctx.arc(x_right, y_top, star_size, p/2, p);
+        
         ctx.stroke();
         ctx.fill();
 
