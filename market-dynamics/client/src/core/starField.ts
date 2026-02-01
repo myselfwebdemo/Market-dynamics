@@ -1,5 +1,21 @@
-import Star, { max_size, min_size } from "./star";
+import Star from "./star";
 import { STAR_MAGNIFIER, STAR_CONFIG } from "../config";
+
+interface Boundaries {
+    mnx?: number
+    mxx?: number
+    mny: number
+    mxy: number
+    innerAreaBlocked: boolean
+}
+
+let BOUNDARIES: Record<string, Boundaries> = {
+    window: {
+        mny: 0,
+        mxy: window.innerHeight,
+        innerAreaBlocked: false
+    }
+};
 
 let cursorPos = {x: 0, y: 0}
 function getCursorCoords(event: MouseEvent) {
@@ -16,28 +32,59 @@ canvas.height = window.innerHeight * dpr;
 
 function spawnStars(nPerRow: number) {
     const stars = [];
-    const gap_x = (screen.width - (nPerRow * max_size)) / (nPerRow + 1);
-    const nRows = Math.round((screen.height - gap_x) / (gap_x/1.1 + max_size));
+    const star_size = STAR_CONFIG.size;
+    const gap_x = (screen.width - (nPerRow * star_size)) / (nPerRow + 1);
+    const nRows = Math.round((screen.height - gap_x) / (gap_x/1.1 + star_size));
+    let starIndex = 0;
 
     for (let ny = 0; ny < nRows; ny++) {
         for (let nx = 0; nx < nPerRow; nx++) {
-            const x = (gap_x * (nx + 1) + max_size * nx) + (max_size / 2);
-            let y = (gap_x * (ny + 1) + max_size * ny) + (max_size / 2);
+            const x = (gap_x * (nx + 1) + star_size * nx) + (star_size / 2);
+            let y = (gap_x * (ny + 1) + star_size * ny) + (star_size / 2);
             
-            const gap_end = screen.height - ((gap_x + max_size) * nRows);
+            const gap_end = screen.height - ((gap_x + star_size) * nRows);
             if (gap_x !== gap_end) {
                 const avg = (gap_x + gap_end) /2;
                 y -= (gap_x - avg);
             }
 
-            const star_size = Math.random() * (max_size - min_size) + min_size;
-            stars.push(new Star(x, y, star_size));
+            const star = new Star(x, y, star_size);
+            star.boundingBoxSize = gap_x + star.size;
+            star.index = starIndex;
+            stars.push(star);
+            starIndex++;
         }
     }
     return stars;
 }
 
-const stars = spawnStars(STAR_CONFIG.nStarsPerRow);
+export const stars = spawnStars(STAR_CONFIG.nStarsPerRow);
+
+export function createObjectBoundaries(htmlEl: HTMLElement, boundaryName: string, blockInnerArea: boolean) {
+    const rect = htmlEl.getBoundingClientRect();
+
+    BOUNDARIES[boundaryName] = {
+        mnx: rect.left,
+        mxx: rect.right,
+        mny: rect.top,
+        mxy: rect.bottom,
+        innerAreaBlocked: blockInnerArea
+    }
+}
+
+function withinBlockedArea(star: Star): boolean {
+    return Object.values(BOUNDARIES).some(boundary => {
+        if (star.y < 0 || star.y > BOUNDARIES.window.mxy) return true;
+        // if (!boundary.innerAreaBlocked) return false;
+
+        return (
+            star.x > boundary.mnx! &&
+            star.x < boundary.mxx! &&
+            star.y > boundary.mny &&
+            star.y < boundary.mxy
+        );
+    });
+}
 
 function getNonEuclDist(star: Star) {
     const cx = cursorPos.x;
@@ -55,13 +102,7 @@ function getNonEuclDist(star: Star) {
     const CF = STAR_MAGNIFIER.concavityFactor;
     let concavity_factor = 1;
 
-    for (let f = 0; f < Math.abs(CF); f++) {
-        if (CF < 0) {
-            concavity_factor /= sum;
-        } else {
-            concavity_factor *= sum;
-        }
-    }
+    concavity_factor *= Math.pow(sum, CF);
 
     const max_boundary_factor = 1 / concavity_factor;
 
@@ -82,6 +123,11 @@ function getNonEuclDist(star: Star) {
 }
 
 function influenceSize(star: Star, dist: number, max_boundary_factor?: number) {
+    if (withinBlockedArea(star)) {
+        star.size = star.initSize;
+        return;
+    }
+
     const influence = 1 - dist / STAR_MAGNIFIER.radius / (!!max_boundary_factor ? max_boundary_factor : 1)
     const scale = 1 + influence * STAR_MAGNIFIER.sizeFactor
     star.size = star.initSize * scale
@@ -113,7 +159,7 @@ function updateCursorEffect() {
             influenceSize(star, dist, max_boundary_factor);
             influenceColor(star, dist, max_boundary_factor)
         } else {
-            star.size += (star.initSize - star.size) * .1;
+            star.size += (star.initSize - star.size) * STAR_MAGNIFIER.lastingEffectFactor;
             star.color = 'rgb(255,100,100)'
         }
         star.draw(ctx);
@@ -127,3 +173,4 @@ function animate() {
 }
 
 animate();
+

@@ -4,7 +4,6 @@ import * as dotenv from 'dotenv';
 import cors from 'cors';
 
 dotenv.config();
-// console.log("API KEY:", !!process.env.OAAK);
 
 const app = express();
 app.use(cors());

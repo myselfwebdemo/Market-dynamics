@@ -1,0 +1,14 @@
+.button {
+    all: unset;
+    top: var(--pos-y);
+    left: var(--pos-x);
+    position: absolute;
+    display: flex;
+    align-items: center;
+    transition: .15s;
+}
+.button img {
+    width: var(--size);
+    height: var(--size);
+    filter: var(--icon-button);
+}

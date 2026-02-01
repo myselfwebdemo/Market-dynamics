@@ -1,5 +1,6 @@
 * {
   margin: 0;
+  padding: 0;
 }
 
 :root {
@@ -7,45 +8,63 @@
   line-height: 1.5;
   font-weight: 400;
 
-  color-scheme: light dark;
+  color-scheme: auto light dark;
   color: var(--theme-el-color);
   --theme-color: #646cff;
   --theme-dark-color: #5258d0;
-  --theme-secondary-color: rgb(255,100,100);
+  --theme-secondary-color: rgb(255 100 100);
+  --theme-tetriary-color: rgb(255 215 0);
   --theme-el-color: #111;
   --theme-bg-color: #fafafa;
   --theme-light-color-const: #fafafa;
   --theme-dark-color-const: #111;
 
   --debug-bg: var(--theme-secondary-color);
-  --theme-positive-color: rgb(0,200,0);
+  --theme-positive-color: rgb(0 200 0);
   --theme-negative-color: red;
   
   --light-theme-invert-bg-10-color: #f9f9f9; /* 10(%) */
   --light-theme-invert-bg-20-color: #f2f2f2;
-  --bg-lightgray-30: rgba(211, 211, 211, .3);
+  --bg-lightgray-30: rgba(211 211 211 .3);
 
-  --disabled-btn-filter: brightness(150%);
-  
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  --blur-int: 10px;
+  --disabled-btn-filter: brightness(150%);  
+  --icon-button: invert(0%);
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
+    /* --theme-color: #a3aaff;  */
     --theme-el-color: #fafafa;
     --theme-bg-color: #111;
-    /* --theme-color: #a3aaff;  */
     --light-theme-invert-bg-10-color: #222;
     --light-theme-invert-bg-20-color: #333;
-
+    
     --disabled-btn-filter: invert(10%) brightness(70%);
+    --icon-button: invert(100%);
   }
 }
 
+:root[data-theme="dark"] {
+  --theme-el-color: #fafafa;
+  --theme-bg-color: #111;
+  --light-theme-invert-bg-10-color: #222;
+  --light-theme-invert-bg-20-color: #333;
+  --disabled-btn-filter: invert(10%) brightness(70%);
+  --icon-button: invert(100%);
+}
+
+:root[data-theme="light"] {
+  --theme-el-color: #111;
+  --theme-bg-color: #fafafa;
+  --light-theme-invert-bg-10-color: #f9f9f9;
+  --light-theme-invert-bg-20-color: #f2f2f2;
+  --disabled-btn-filter: brightness(150%);
+  --icon-button: invert(0%);
+}
+
 #root {
+  position: relative;
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -58,7 +77,6 @@ canvas {
   top: 0;
   left: 0;
   position: absolute;
-  display: block;
   width: 100vw;
   height: 100vh;
   z-index: 0;
@@ -73,6 +91,58 @@ span {
   font-weight: 500;
 }
 
+.single-cell-with-boundaries {
+  --size: 3.6vh;
+}
+
+.setting-ui {
+  --int: 2px;
+  --pos-x: 0;
+  --pos-y: 0;
+  --width: 0;
+  --pad: 0.4vh;
+  --brr: 1.2vh;
+  box-sizing: border-box;
+  top: var(--pos-y);
+  left: var(--pos-x);
+  position: absolute;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  width: var(--width);
+  padding: var(--pad);
+  border: solid 1px var(--theme-color);
+  border-radius: var(--brr);
+  backdrop-filter: blur(var(--int));
+  -webkit-backdrop-filter: blur(var(--int));
+  box-shadow: inset 0 0 .5vh var(--theme-color);
+}
+.closed-s-ui {
+  display: none;
+}
+.setting-ui input,
+.setting-ui button {
+  top: 0;
+  left: 0;
+  position: relative;
+  width: 3.6;
+  padding: .5vh;
+  background: var(--light-theme-invert-bg-20-color);
+  border-radius: calc(var(--brr) - var(--pad));
+}
+.setting-ui .selected {
+  background: var(--theme-color);
+}
+.setting-ui .selected img {
+  filter: invert(100%);
+}
+.setting-ui input {
+  height: 100%;
+  width: 3vw;
+  margin: 0;
+}
+.setting-ui input::-webkit-slider-thumb {display: none;}
+
 .side-content {
   display: flex;
   flex-direction: column;
@@ -83,7 +153,6 @@ span {
 }
 
 .form, .direct-req-res, .main-content {
-  --blur: 10px;
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
@@ -91,8 +160,8 @@ span {
   height: fit-content;
   padding: 1em;
   background: transparent;
-  backdrop-filter: blur(var(--blur));
-  -webkit-backdrop-filter: blur(var(--blur));
+  backdrop-filter: blur(var(--blur-int));
+  -webkit-backdrop-filter: blur(var(--blur-int));
   border: solid 1px var(--theme-color);
   border-radius: 16px;
   box-shadow: inset 0 0 .5vh var(--theme-color);
@@ -112,7 +181,7 @@ input {
   outline: none;
   text-overflow: ellipsis;
 }
-input:focus {
+.form input:focus {
   border-right: solid 3px var(--theme-positive-color);
 }
 
@@ -145,7 +214,7 @@ input:focus {
 }
 
 .direct-res {
-  height: 12vh;
+  min-height: 12vh;
   position: relative;
 }
 .direct-res div {

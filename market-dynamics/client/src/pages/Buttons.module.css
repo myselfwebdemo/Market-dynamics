@@ -1,9 +1,9 @@
 button {
     padding: 0.6em 1.2em;
     border-radius: 8px;
-    cursor: pointer;
     transition: .25s;
     flex: 1;
+    cursor: pointer !important;
 }
 
 .disabled {

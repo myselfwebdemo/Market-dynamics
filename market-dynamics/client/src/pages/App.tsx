@@ -1,9 +1,11 @@
 import './App.css';
 import BUTTONS from './Buttons.module.css';
 import INDICATORS from './Indicators.module.css';
-import React, { useState, type ChangeEvent } from 'react';
-import { classifyExternality } from '../service/model';
-import Loader from '../components/loader';
+import React, { useEffect, useState, type ChangeEvent } from 'react';
+import { classifyExternality } from '../service/dispatchRunInference';
+import Loader from '../components/loader/loader';
+import IconButton from '../components/icon-button/icon-button';
+import { createObjectBoundaries, stars } from '../core/starField';
 
 function App() {
     const [requestQuery, SUReq] = useState({
@@ -29,11 +31,11 @@ function App() {
     const CURVES_MAP = {
         decrease: {
             class: 'negative',
-            imgRoot: '/red-arrow.png'
+            imgRoot: '/icons/call_red.svg'
         },
         increase: {
             class: 'positive',
-            imgRoot: '/green-arrow.png'
+            imgRoot: '/icons/call_green.svg'
         },
         no_impact: {
             class: 'no_effect',
@@ -109,8 +111,130 @@ function App() {
         disableBtn(prev => ({...prev, autoFillBtn: 'disabled'}))
     }
 
+    // function registerBoundingField(element: HTMLElement) {}
+
+    function pinSingleCellElements(elementsList: NodeListOf<HTMLButtonElement>) {
+        
+        elementsList.forEach(element => {
+            // let count;
+
+            // if (element.dataset.fromtop) {
+
+            // }
+            // for (let s = 0; s < stars.length; s++) {}
+
+            const rect = element.getBoundingClientRect();
+            const starId = Number(element.dataset.pinto);
+    
+            const bs = stars[starId];
+            const bx = bs.x - rect.width/2;
+            const by = bs.y - rect.height/2;
+    
+            element.style.setProperty('--pos-y', `${by}px`);
+            element.style.setProperty('--pos-x', `${bx}px`);
+
+            createObjectBoundaries(element, element.name, true);
+        })
+    }
+
+    function bindMultiCellElements(element: HTMLDivElement) {
+        const rect = element.getBoundingClientRect();
+        const starId = Number(element.dataset.pinto);
+
+        const es = stars[starId];
+        const ex = es.x - es.boundingBoxSize/2;
+        const ey = es.y - rect.height/2;
+        const w = es.boundingBoxSize * Number(element.dataset.width);
+
+        element.style.setProperty('--pos-y', `${ey}px`);
+        element.style.setProperty('--pos-x', `${ex}px`);
+        element.style.setProperty('--width', `${w}px`);
+
+        element.dataset.name ? (
+            createObjectBoundaries(element, element.dataset.name, true)
+        ) : (
+            createObjectBoundaries(element, element.toString(), true)
+        )
+    }
+    
+    useEffect(() => {
+        const userColorScheme = localStorage.getItem('colorScheme') as 'light' | 'auto' | 'dark';
+        if (userColorScheme) setColorScheme(userColorScheme);
+
+        const buttons = document.querySelectorAll<HTMLButtonElement>('.single-cell-with-boundaries');
+        pinSingleCellElements(buttons);
+    }, []);
+    
+    function invokeSettingsUI(ui: string) {
+        const settingUI = document.querySelector(`.${ui}`) as HTMLDivElement;
+        settingUI.classList.toggle('closed-s-ui');
+        bindMultiCellElements(settingUI);
+    }
+
+    function setColorScheme(mode: 'light' | 'dark' | 'auto') {
+        const root = document.documentElement;
+        const button = document.getElementById(`${mode}Mode`);
+
+        document.querySelectorAll('.mode-switch').forEach(sw => {
+            sw.classList.remove('selected');
+        });
+
+        if (mode === 'auto') {
+            root.removeAttribute('data-theme');
+            root.style.setProperty('color-scheme', 'auto light dark');
+        } else {
+            root.setAttribute('data-theme', mode);
+            root.style.setProperty('color-scheme', mode);
+        }
+
+        button?.classList.add('selected');
+        localStorage.setItem('colorScheme', mode);
+    }
+
     return (
         <React.Fragment>
+            <IconButton
+                className='single-cell-with-boundaries star-magnifier-modifier-btn'
+                name='srMagnifierBtn'
+                data-pinto='122'
+                root='./icons/flare.svg'
+                onClick={() => invokeSettingsUI('star-magnifier-setting')} />
+                
+            <div className='setting-ui star-magnifier-setting closed-s-ui' data-name='settinUI' data-pinto='114' data-width='7'>
+                <input type="number" placeholder='oh' />
+                <input type="number" placeholder='oh' />
+                <input type="number" placeholder='oh' />
+            </div>
+
+            <IconButton
+                className='single-cell-with-boundaries color-scheme-switch-btn'
+                name='colSchemeBtn'
+                data-pinto='124'
+                // data-fromtop='1'
+                // data-frombottom=''
+                // data-fromleft=''
+                // data-fromright='1'
+                root='./icons/settings_color_scheme.svg'
+                onClick={() => invokeSettingsUI('color-scheme-setting')} />
+
+            <div className='setting-ui color-scheme-setting closed-s-ui' data-name='settingUI' data-pinto='118' data-width='5'>
+                <IconButton
+                    id='lightMode'
+                    className='mode-switch'
+                    root='/icons/light_mode.svg'
+                    onClick={() => setColorScheme('light')} />
+                <IconButton
+                    id='autoMode'
+                    className='mode-switch'
+                    root='/icons/auto_dark_mode.svg'
+                    onClick={() => setColorScheme('auto')} />
+                <IconButton
+                    id='darkMode'
+                    className='mode-switch'
+                    root='/icons/dark_mode.svg'
+                    onClick={() => setColorScheme('dark')} />
+            </div>
+
             <div className='side-content'>
                 <div className="form">
                     <label htmlFor="externalityQuery">externality</label>

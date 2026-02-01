@@ -1,14 +1,14 @@
 export const STAR_CONFIG = {
+    nStarsPerRow: 42,
     color: 'rgb(255,100,100)',
-    minSize: 10, // 5
-    maxSize: 10, // 15
-    nStarsPerRow: 42, // per row
+    size: 10,
 }
 export const STAR_MAGNIFIER = {
     radius: 500,
-    concavityFactor: 2,
-    sizeFactor: 2,
+    concavityFactor: 2.3,
+    sizeFactor: 3,
+    lastingEffectFactor: 0.08,
     initColor: (STAR_CONFIG.color.match(/\d+/g) ?? []).join(','),
-    targetColor: '255,166,0', // #646cff = 100,108,255
+    targetColor: '255,215,0',
     spiderWeb: false,
 }
