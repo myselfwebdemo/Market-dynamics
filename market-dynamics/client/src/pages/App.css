@@ -29,14 +29,13 @@
   --light-theme-invert-bg-20-color: #f2f2f2;
   --bg-lightgray-30: rgba(211 211 211 .3);
 
-  --blur-int: 20px;
-  --disabled-btn-filter: brightness(150%);  
+  --blur-int: 10px;
+  --disabled-btn-filter: brightness(150%);
   --icon-button: invert(0%);
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    /* --theme-color: #a3aaff;  */
     --theme-el-color: #fafafa;
     --theme-bg-color: #111;
     --light-theme-invert-bg-10-color: #222;
@@ -212,7 +211,7 @@ input {
   flex-direction: row;
   gap: .5em;
 }
-  
+
 .direct-req-res {
   border: none;
   border-radius: 8px;
@@ -220,6 +219,8 @@ input {
   background: var(--light-theme-invert-bg-20-color);
   margin-top: 2em;
   overflow: hidden;
+  display: flex;
+  justify-content: space-between;
 }
 
 .direct-req-res h2 {

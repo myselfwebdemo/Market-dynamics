@@ -405,8 +405,8 @@ function App() {
                         <button className={`${BUTTONS.primary} ${BUTTONS[disabledBtns.sendBtn]}`} onClick={dispatchRunInference}>apply</button>
                     </div>
                     <div className="direct-req-res">
-                        <h2>last request</h2>
                         <div className="direct-req">
+                            <h2>last request</h2>
                             <div>
                                 <p>Externality: {requestQueryCopy.query}</p>
                             </div>
@@ -418,8 +418,8 @@ function App() {
                             </div>
                         </div>
 
-                        <h2>response</h2>
                         <div className="direct-res">
+                            <h2>response</h2>
                             {
                                 !isLoading ? (
                                     <React.Fragment>
@@ -489,11 +489,12 @@ function App() {
                 </div>
             </div>
 
-            <div className='grid-anchorable main-style' data-name='mainContent' data-fromtop='3' data-fromright='12' data-width='9' data-height='18'></div>
-            <div className='grid-anchorable main-style' data-name='mainContent' data-fromtop='3' data-fromleft='10' data-width='10' data-height='10'></div>
+            {/* <div className='grid-anchorable main-style' data-name='mainContent' data-fromtop='3' data-fromright='12' data-width='20' data-height='18'></div>
+            <div className='grid-anchorable main-style' data-name='mainContent2' data-fromtop='3' data-fromright='1' data-width='10' data-height='18'></div> */}
+            {/* <div className='grid-anchorable main-style' data-name='mainContent' data-fromtop='3' data-fromleft='10' data-width='10' data-height='10'></div>
             <div className='grid-anchorable main-style' data-name='mainContent1' data-fromtop='3' data-fromright='1' data-width='10' data-height='7'></div>
             <div className='grid-anchorable main-style' data-name='mainContent3' data-frombottom='3' data-fromleft='10' data-width='10' data-height='7'></div>
-            <div className='grid-anchorable main-style' data-name='mainContent4' data-frombottom='3' data-fromright='1' data-width='10' data-height='10'></div>
+            <div className='grid-anchorable main-style' data-name='mainContent4' data-frombottom='3' data-fromright='1' data-width='10' data-height='10'></div> */}
         </React.Fragment>
     )
 }

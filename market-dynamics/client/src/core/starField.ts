@@ -113,7 +113,6 @@ function getNonEuclDist(star: Star) {
     let concavity_factor = 1;
 
     concavity_factor *= Math.pow(sum, CF);
-
     const max_boundary_factor = 1 / concavity_factor;
 
     if (STAR_MAGNIFIER.spiderWeb) {
@@ -163,7 +162,7 @@ function influenceColor(star: Star, dist: number, max_bondary_factor?: number) {
     const g = Math.round(initG + (targetG - initG) * influence);
     const b = Math.round(initB + (targetB - initB) * influence);
 
-    star.color = `rgb(${r}, ${g}, ${b})`;
+    star.color = `rgba(${r}, ${g}, ${b}, ${Math.max(0.2,influence)})`;
 }
 
 function updateCursorEffect() {

@@ -1,6 +1,6 @@
 export const STAR_CONFIG = {
     nStarsPerRow: 42,
-    color: 'rgb(255,100,100)',
+    color: 'rgba(122, 122, 122, 0.2)',
     size: 10,
 }
 export const STAR_MAGNIFIER = {
@@ -9,6 +9,7 @@ export const STAR_MAGNIFIER = {
     sizeFactor: 3,
     lastingEffectFactor: 0.08,
     initColor: (STAR_CONFIG.color.match(/\d+/g) ?? []).join(','),
-    targetColor: '255,215,0',
+    targetColor: '163, 170, 255', // #a3aaff
+    // targetColor: '100,108,255', // rgb(100 108 255)
     spiderWeb: false,
 }
